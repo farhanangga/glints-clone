@@ -89,10 +89,18 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ data: POPULAR_SEARCHES[tab] });
   }
 
+  // GET /api?section=registrants  (data pendaftar, terbaru di atas)
+  if (section === "registrants") {
+    return NextResponse.json(
+      { data: [...registrants].reverse() },
+      { headers: { "Cache-Control": "no-store" } }
+    );
+  }
+
   return NextResponse.json(
     {
       message:
-        'Parameter "section" wajib diisi: "jobs", "companies", "categories", "cities", "popular-tags", atau "popular-searches".',
+        'Parameter "section" wajib diisi: "jobs", "companies", "categories", "cities", "popular-tags", "popular-searches", atau "registrants".',
     },
     { status: 400 }
   );

@@ -22,7 +22,7 @@ const FONT_URL = "https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;50
 export default function BerandaPage() {
   return (
     <div
-      className="min-h-screen bg-white text-black antialiased"
+      className="min-h-screen bg-[#f6f6f6] text-black antialiased"
       style={{ fontFamily: "'Noto Sans', system-ui, -apple-system, 'Segoe UI', sans-serif" }}
     >
       {/* React 19 memindahkan <link> ini ke <head> secara otomatis */}
@@ -34,13 +34,21 @@ export default function BerandaPage() {
       <Navbar stickySearch />
       <Hero />
       <Container className="mt-6">
-        <div className="grid gap-6 lg:grid-cols-[488px_minmax(0,1fr)]">
-          <CategorySidebar />
-          <PromoPanel />
-        </div>
+        <Container className="mt-6">
+          <div className="grid gap-6 md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] md:gap-4 lg:grid-cols-[488px_minmax(0,1fr)] lg:gap-6">
+            <CategorySidebar />
+            <PromoPanel />
+          </div>
+        </Container>
       </Container>
-      <FeaturedJobs />
-      <PopularCompanies />
+      <div className="flex flex-col">
+        <div className="order-2 lg:order-1">
+          <FeaturedJobs />
+        </div>
+        <div className="order-1 lg:order-2">
+          <PopularCompanies />
+        </div>
+      </div>
       <PopularCities />
       <AppBanner />
       <PopularSearches />

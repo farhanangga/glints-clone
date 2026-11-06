@@ -2,11 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-/**
- * Fetch GET sederhana: loading, error, retry.
- * Data lama dipertahankan saat memuat ulang (mis. ganti tab / halaman),
- * supaya layout tidak loncat.
- */
 export function useApi<T>(url: string) {
   const [payload, setPayload] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);

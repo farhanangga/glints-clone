@@ -2,16 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { ArrowRight, ChevronDown, Globe, MapPin, Menu, MessageSquare, Search, X } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowRight, ChevronDown, Globe, MapPin, Menu, Search, X } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 
 /**
  * Navbar Glints TapLoker.
  *
- * - `stickySearch` (khusus halaman utama): navbar menempel di atas, dan baris
- *   pencarian muncul di bawahnya setelah kolom cari di section hero (id="hero-search")
- *   hilang dari layar. Di halaman lain, jangan beri prop ini.
+ * - Navbar selalu menempel di atas (sticky) di semua halaman.
+ * - `stickySearch` (khusus halaman utama): baris pencarian muncul di bawah navbar
+ *   setelah kolom cari di section hero (id="hero-search") hilang dari layar.
+ *   Di halaman lain, jangan beri prop ini.
  * - Desktop (>= xl): menu penuh. Di bawah itu: logo kiri, ikon pesan + hamburger kanan,
  *   dan sidebar biru meluncur dari kanan.
  */
@@ -25,13 +26,36 @@ const NAV_LINKS = [
   { label: "Blog", href: "#" },
 ];
 
-const LANGUAGES = ["Indonesian", "English"] as const;
+const LANGUAGES = ["English", "Indonesian"] as const;
+
+const ALL_LOCATIONS = "Semua Kota/Provinsi";
+const LOCATION_EVENT = "glints:location";
+const LOCATIONS = [
+  ALL_LOCATIONS,
+  "Jabodetabek",
+  "Jakarta Selatan, DKI Jakarta",
+  "Jakarta Barat, DKI Jakarta",
+  "Surabaya, Jawa Timur",
+  "Jakarta Utara, DKI Jakarta",
+  "Kab. Tangerang, Banten",
+];
 
 /** Garis hitam di bawah teks yang melebar dari tengah ke kiri dan kanan saat hover/fokus. */
 const UNDERLINE =
   "relative inline-flex items-center gap-1.5 py-1 after:absolute after:bottom-0 after:left-1/2 after:h-[2px] after:w-0 " +
   "after:-translate-x-1/2 after:bg-black after:content-[''] after:transition-[width] after:duration-300 after:ease-out " +
   "hover:after:w-full focus-visible:after:w-full focus-visible:outline-none motion-reduce:after:transition-none";
+
+/* -------------------------------------------------------------------------- */
+/* Ikon pesan (solid / blok hitam) untuk mobile                               */
+/* -------------------------------------------------------------------------- */
+function ChatFilledIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={className}>
+      <path d="M4 3h16a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H8.2l-4.4 3.6c-.6.5-1.8.1-1.8-.8V5a2 2 0 0 1 2-2z" />
+    </svg>
+  );
+}
 
 /* -------------------------------------------------------------------------- */
 /* Tombol "Unduh App Glints": hover = bayangan garis miring abu-abu           */
@@ -83,7 +107,7 @@ function LanguageMenu() {
         aria-haspopup="listbox"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
-        className={UNDERLINE}
+        className={`${UNDERLINE} ${open ? "after:w-full" : ""}`}
       >
         <Globe className="size-4" />
         {lang}
@@ -93,7 +117,7 @@ function LanguageMenu() {
       {open && (
         <ul
           role="listbox"
-          className="absolute right-0 top-full z-10 mt-3 w-40 overflow-hidden rounded border border-[#E5E5E5] bg-white py-1 shadow-[0_4px_16px_rgba(0,0,0,0.12)]"
+          className="absolute left-0 top-full z-10 mt-2 w-44 overflow-hidden rounded-md border border-[#EDEDED] bg-white py-1 shadow-[0_4px_16px_rgba(0,0,0,0.12)]"
         >
           {LANGUAGES.map((l) => (
             <li key={l} role="option" aria-selected={l === lang}>
@@ -103,9 +127,7 @@ function LanguageMenu() {
                   setLang(l);
                   setOpen(false);
                 }}
-                className={`block w-full px-4 py-2 text-left text-[13px] font-medium normal-case hover:bg-[#F2F2F2] ${
-                  l === lang ? "text-[#1672E0]" : "text-black"
-                }`}
+                className="block w-full px-4 py-3 text-left text-[13px] font-medium uppercase text-black hover:bg-[#F2F2F2]"
               >
                 {l}
               </button>
@@ -118,9 +140,128 @@ function LanguageMenu() {
 }
 
 /* -------------------------------------------------------------------------- */
+/* Dropdown lokasi untuk baris pencarian sticky (sinkron dengan Hero)         */
+/* -------------------------------------------------------------------------- */
+function LocationDropdown({ forceClose }: { forceClose: boolean }) {
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState(ALL_LOCATIONS);
+  const [query, setQuery] = useState("");
+  const ref = useRef<HTMLDivElement>(null);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return q ? LOCATIONS.filter((l) => l.toLowerCase().includes(q)) : LOCATIONS;
+  }, [query]);
+
+  // Sinkron dengan dropdown lokasi di hero
+  useEffect(() => {
+    const onSync = (e: Event) => setSelected((e as CustomEvent<string>).detail);
+    window.addEventListener(LOCATION_EVENT, onSync);
+    return () => window.removeEventListener(LOCATION_EVENT, onSync);
+  }, []);
+
+  // Tutup saat baris pencarian menghilang
+  useEffect(() => {
+    if (forceClose) setOpen(false);
+  }, [forceClose]);
+
+  // Tutup saat klik di luar / tekan Escape
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const choose = (loc: string) => {
+    setSelected(loc);
+    window.dispatchEvent(new CustomEvent(LOCATION_EVENT, { detail: loc }));
+    setOpen(false);
+    setQuery("");
+  };
+
+  return (
+    <div ref={ref} className="relative hidden w-[232px] shrink-0 border-r border-[#DDD] md:block">
+      <button
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+        className={`flex h-full w-full items-center gap-2 px-3 text-base ${open ? "text-[#1672E0]" : "text-[#222]"}`}
+      >
+        <MapPin className="size-[18px] shrink-0" />
+        <span className="flex-1 truncate text-left">{selected}</span>
+        <ChevronDown
+          className={`size-4 shrink-0 transition-transform duration-200 ${
+            open ? "rotate-180 text-[#1672E0]" : "text-[#555]"
+          }`}
+        />
+      </button>
+
+      {open && (
+        <div className="absolute -left-1 top-full z-50 mt-3 w-[320px] rounded-xl bg-white p-2 shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
+          <label className="flex h-11 items-center gap-2 rounded-lg border border-[#D3D3D3] px-3 focus-within:border-[#1672E0]">
+            <Search className="size-[18px] shrink-0 text-[#9A9A9A]" />
+            <input
+              autoFocus
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Cari Kota/Provinsi"
+              className="w-full bg-transparent text-base text-[#222] placeholder:text-[#8E8E8E] focus:outline-none"
+            />
+          </label>
+
+          <ul role="listbox" className="mt-2 max-h-[300px] overflow-y-auto">
+            {filtered.length === 0 && <li className="px-3 py-3 text-sm text-[#8E8E8E]">Lokasi tidak ditemukan</li>}
+            {filtered.map((loc) => {
+              const active = loc === selected;
+              return (
+                <li key={loc} role="option" aria-selected={active}>
+                  <button
+                    type="button"
+                    onClick={() => choose(loc)}
+                    className={`block w-full border-l-[3px] px-3 py-3 text-left text-[15px] ${
+                      active
+                        ? "border-[#1672E0] bg-[#E3EEFB] text-[#1672E0]"
+                        : "border-transparent text-[#333] hover:bg-[#F2F7FD]"
+                    }`}
+                  >
+                    {loc}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
 /* Baris pencarian yang muncul saat di-scroll                                 */
 /* -------------------------------------------------------------------------- */
 function StickySearchRow({ visible }: { visible: boolean }) {
+  // overflow-hidden dibutuhkan saat animasi buka/tutup, tapi akan memotong dropdown.
+  // Jadi overflow baru dilepas setelah animasi buka selesai.
+  const [settled, setSettled] = useState(false);
+
+  useEffect(() => {
+    if (!visible) {
+      setSettled(false);
+      return;
+    }
+    const t = setTimeout(() => setSettled(true), 300);
+    return () => clearTimeout(t);
+  }, [visible]);
+
   return (
     <div
       inert={!visible}
@@ -129,21 +270,14 @@ function StickySearchRow({ visible }: { visible: boolean }) {
         visible ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
       }`}
     >
-      <div className="overflow-hidden">
+      <div className={settled ? "overflow-visible" : "overflow-hidden"}>
         <Container className="py-4">
           <form
             role="search"
             onSubmit={(e) => e.preventDefault()}
             className="flex h-[52px] items-stretch rounded-lg border border-[#C9C9C9] bg-white p-1"
           >
-            <button
-              type="button"
-              className="hidden w-[232px] shrink-0 items-center gap-2 border-r border-[#DDD] px-3 text-base text-[#222] md:flex"
-            >
-              <MapPin className="size-[18px]" />
-              <span className="flex-1 text-left">Semua Kota/Provinsi</span>
-              <ChevronDown className="size-4 text-[#555]" />
-            </button>
+            <LocationDropdown forceClose={!visible} />
             <label className="flex min-w-0 flex-1 items-center gap-2 px-3">
               <Search className="size-[18px] shrink-0 text-[#999]" />
               <input
@@ -278,9 +412,9 @@ export function Navbar({ stickySearch = false }: { stickySearch?: boolean }) {
 
   return (
     <header
-      className={`z-50 bg-white transition-shadow duration-300 ${
-        stickySearch ? "sticky top-0" : "relative"
-      } ${stickySearch && showSearch ? "shadow-[0_4px_12px_rgba(0,0,0,0.08)]" : ""}`}
+      className={`sticky top-0 z-50 bg-white transition-shadow duration-300 ${
+        stickySearch && showSearch ? "shadow-[0_4px_12px_rgba(0,0,0,0.08)]" : ""
+      }`}
     >
       <div className="border-b border-[#E5E5E5]">
         <Container className="flex h-[60px] items-center justify-between xl:h-[70px]">
@@ -321,8 +455,8 @@ export function Navbar({ stickySearch = false }: { stickySearch?: boolean }) {
 
           {/* Kanan: mobile */}
           <div className="flex items-center gap-4 xl:hidden">
-            <button type="button" aria-label="Pesan" className="p-1 text-[#333] hover:text-[#1672E0]">
-              <MessageSquare className="size-6" />
+            <button type="button" aria-label="Pesan" className="p-1 text-black hover:text-[#1672E0]">
+              <ChatFilledIcon className="size-6" />
             </button>
             <button
               type="button"

@@ -119,45 +119,140 @@ export const COMPANIES: Company[] = [
 /* Data tambahan untuk halaman beranda detail                                 */
 /* -------------------------------------------------------------------------- */
 
-export type CategoryGroup = { id: string; name: string; subs: string[] };
+// Grup role untuk flyout sidebar kategori (panel di kanan saat kategori di-hover).
+export type RoleGroup = { title: string; roles: string[] };
 
-const CATEGORY_SEED: [string, string[]][] = [
-  ["Administrasi & HRD", ["Admin"]],
-  ["Akuntansi", ["Akuntansi"]],
-  ["Business Development & Sales", []],
-  ["Desain", ["Desain Non-Visual"]],
-  ["Hotel & Travel", ["Perhotelan", "Tour & Travel"]],
-  ["Industri Jasa", ["Salon & Spa", "Kebersihan"]],
-  ["Keuangan", ["Analis Keuangan", "Perpajakan"]],
-  ["Komputer & Perangkat Lunak", ["Frontend", "Backend", "QA"]],
-  ["Konstruksi & Bangunan", ["Arsitek", "Sipil"]],
-  ["Konsultan", ["Manajemen"]],
-  ["Layanan Pelanggan", ["Customer Service"]],
-  ["Manufaktur", ["Produksi", "QC"]],
-  ["Marketing", ["Digital Marketing", "Content"]],
-  ["Media & Komunikasi", ["Public Relations"]],
-  ["Pendidikan", ["Guru", "Dosen"]],
-  ["Kesehatan", ["Perawat", "Farmasi"]],
-  ["Logistik & Supply Chain", ["Gudang", "Kurir"]],
-  ["Hukum", ["Legal"]],
-  ["Properti", ["Agen Properti"]],
-  ["Retail", ["Kasir", "Merchandiser"]],
-  ["Makanan & Minuman", ["Koki", "Barista"]],
-  ["Teknik", ["Mesin", "Listrik"]],
-  ["Sains", ["Laboratorium"]],
-  ["Pertanian", ["Perkebunan"]],
-  ["Seni & Hiburan", ["Fotografi", "Video"]],
-  ["Otomotif", ["Mekanik"]],
-  ["Energi & Pertambangan", ["Migas"]],
-  ["Pemerintahan", []],
-  ["Telekomunikasi", ["Jaringan"]],
-  ["Asuransi & Perbankan", ["Teller", "Agen"]],
+export type CategoryGroup = {
+  id: string;
+  name: string;
+  subs: string[];
+  roleGroups: RoleGroup[];
+};
+
+// [nama kategori, subs di sidebar, [[judul grup flyout, [role...]], ...]]
+// "Administrasi & HRD" disalin dari glints.com/id; sisanya perkiraan, silakan sesuaikan.
+const CATEGORY_SEED: [string, string[], [string, string[]][]][] = [
+  ["Administrasi & HRD", ["Admin"], [
+    ["Admin", ["Admin", "Admin Data Entry", "Arsiparis", "General Affair", "Manager Administrasi", "Pengendali Dokumen", "Resepsionis", "Sekretaris"]],
+    ["Human Resources (HR)", ["Direktur Human Resources (HR)", "Employer Branding Specialist", "HRBP", "Manager Human Resources (HR)", "Rekruter", "Spesialis Learning & Development", "Staf HRGA", "Staf Penggajian", "Staff HRD & Personalia"]],
+  ]],
+  ["Akuntansi", ["Akuntansi"], [
+    ["Akuntansi", ["Akuntan", "Akuntan Pajak", "Auditor", "Kasir", "Manager Akuntansi", "Staf Akuntansi", "Staf Pajak", "Staf Penagihan"]],
+  ]],
+  ["Business Development & Sales", [], [
+    ["Business Development", ["Business Development Executive", "Business Development Manager", "Partnership Manager", "Strategic Partnership"]],
+    ["Sales", ["Account Executive", "Admin Sales", "Manager Penjualan", "Sales Executive", "Sales Marketing", "Staff Operasional Sales"]],
+  ]],
+  ["Desain", ["Desain Non-Visual"], [
+    ["Desain Non-Visual", ["Arsitek", "Desainer Interior", "Product Designer", "UI/UX Designer", "UX Researcher", "UX Writer"]],
+    ["Desain Visual", ["Desainer Grafis", "Desainer Kemasan", "Ilustrator", "Motion Graphic Designer"]],
+  ]],
+  ["Hotel & Travel", ["Perhotelan", "Tour & Travel"], [
+    ["Perhotelan", ["Concierge", "Front Office", "Guest Relation", "Housekeeping", "Manager Hotel", "Reservasi Hotel", "Room Attendant"]],
+    ["Tour & Travel", ["Staf Reservasi", "Staf Ticketing", "Tour Guide", "Tour Leader", "Tour Planner", "Travel Consultant", "Visa Officer"]],
+  ]],
+  ["Industri Jasa", ["Salon & Spa", "Kebersihan"], [
+    ["Salon & Spa", ["Beautician", "Hairstylist", "Kapster", "Nail Artist", "Terapis Pijat", "Terapis Spa"]],
+    ["Kebersihan", ["Cleaning Service", "Office Boy", "Petugas Kebersihan", "Staf Laundry", "Supervisor Kebersihan"]],
+  ]],
+  ["Keuangan", ["Analis Keuangan", "Perpajakan"], [
+    ["Analis Keuangan", ["Analis Keuangan", "Financial Planner", "Manager Keuangan", "Staf Keuangan", "Staf Treasury"]],
+    ["Perpajakan", ["Konsultan Pajak", "Manager Pajak", "Staf Pajak", "Tax Accountant"]],
+  ]],
+  ["Komputer & Perangkat Lunak", ["Frontend", "Backend", "QA"], [
+    ["Frontend", ["Frontend Developer", "React Developer", "UI Developer", "Web Developer"]],
+    ["Backend", ["Backend Developer", "Java Developer", "Node.js Developer", "Software Engineer"]],
+    ["Mobile", ["Android Developer", "Flutter Developer", "iOS Developer"]],
+    ["QA", ["QA Automation", "QA Engineer", "QA Tester"]],
+  ]],
+  ["Konstruksi & Bangunan", ["Arsitek", "Sipil"], [
+    ["Arsitek", ["Arsitek", "Drafter", "Desainer Interior"]],
+    ["Sipil", ["Estimator", "Insinyur Sipil", "Pelaksana Lapangan", "Project Manager Konstruksi", "Quantity Surveyor", "Site Engineer"]],
+  ]],
+  ["Konsultan", ["Manajemen"], [
+    ["Manajemen", ["Business Analyst", "Business Consultant", "Konsultan Manajemen", "Management Trainee", "Project Manager"]],
+  ]],
+  ["Layanan Pelanggan", ["Customer Service"], [
+    ["Customer Service", ["Call Center Agent", "Customer Care", "Customer Service", "Customer Service Online", "Customer Support", "Staf Helpdesk"]],
+  ]],
+  ["Manufaktur", ["Produksi", "QC"], [
+    ["Produksi", ["Leader Produksi", "Operator Produksi", "PPIC", "Staf Produksi", "Supervisor Produksi"]],
+    ["QC", ["Inspektur QC", "Staf QA", "Staf QC"]],
+  ]],
+  ["Marketing", ["Digital Marketing", "Content"], [
+    ["Marketing", ["Brand Manager", "Manager Marketing", "Marketing Communication", "Staf Marketing"]],
+    ["Digital Marketing", ["Digital Marketing Specialist", "Marketplace Specialist", "Performance Marketer", "SEO Specialist", "Social Media Specialist"]],
+    ["Content", ["Content Creator", "Content Strategist", "Content Writer", "Copywriter"]],
+  ]],
+  ["Media & Komunikasi", ["Public Relations"], [
+    ["Public Relations", ["Communication Specialist", "Corporate Communication", "Humas", "Public Relations"]],
+    ["Media", ["Editor", "Jurnalis", "Penulis", "Penyiar", "Reporter"]],
+  ]],
+  ["Pendidikan", ["Guru", "Dosen"], [
+    ["Guru", ["Guru Bahasa Inggris", "Guru Les Privat", "Guru Matematika", "Guru SD", "Guru TK", "Tutor"]],
+    ["Dosen", ["Asisten Dosen", "Dosen Tetap", "Dosen Tidak Tetap", "Instruktur Pelatihan"]],
+  ]],
+  ["Kesehatan", ["Perawat", "Farmasi"], [
+    ["Perawat", ["Bidan", "Caregiver", "Perawat", "Perawat Gigi"]],
+    ["Farmasi", ["Admin Apotek", "Apoteker", "Asisten Apoteker", "Tenaga Vokasi Farmasi"]],
+    ["Tenaga Medis", ["Analis Kesehatan", "Dokter Gigi", "Dokter Umum", "Fisioterapis", "Radiografer"]],
+  ]],
+  ["Logistik & Supply Chain", ["Gudang", "Kurir"], [
+    ["Gudang", ["Admin Gudang", "Checker Gudang", "Operator Forklift", "Staf Gudang", "Supervisor Gudang"]],
+    ["Kurir", ["Driver", "Kurir", "Staf Logistik", "Staf Pengiriman", "Supervisor Logistik"]],
+  ]],
+  ["Hukum", ["Legal"], [
+    ["Legal", ["Compliance Officer", "Corporate Lawyer", "Legal Officer", "Paralegal", "Staf Legal"]],
+  ]],
+  ["Properti", ["Agen Properti"], [
+    ["Agen Properti", ["Agen Properti", "Leasing Executive", "Marketing Properti", "Property Consultant", "Property Manager"]],
+  ]],
+  ["Retail", ["Kasir", "Merchandiser"], [
+    ["Kasir", ["Kasir", "Pramuniaga", "Staf Toko", "Store Crew", "Store Manager"]],
+    ["Merchandiser", ["Area Supervisor", "Merchandiser", "Sales Promoter (SPG/SPB)", "Staf Display", "Visual Merchandiser"]],
+  ]],
+  ["Makanan & Minuman", ["Koki", "Barista"], [
+    ["Koki", ["Baker", "Commis", "Cook Helper", "Koki", "Pastry Chef"]],
+    ["Barista", ["Barista", "Bartender", "Crew Restoran", "Manager Restoran", "Waiter/Waitress"]],
+  ]],
+  ["Teknik", ["Mesin", "Listrik"], [
+    ["Mesin", ["Insinyur Mekanik", "Operator CNC", "Staf Maintenance", "Teknisi AC", "Teknisi Mesin"]],
+    ["Listrik", ["Insinyur Elektro", "Teknisi Elektronika", "Teknisi Listrik"]],
+  ]],
+  ["Sains", ["Laboratorium"], [
+    ["Laboratorium", ["Analis Laboratorium", "Asisten Laboratorium", "Chemist", "Peneliti", "Staf R&D", "Teknisi Laboratorium"]],
+  ]],
+  ["Pertanian", ["Perkebunan"], [
+    ["Perkebunan", ["Agronomis", "Asisten Kebun", "Mandor Kebun", "Petugas Lapangan Pertanian", "Staf Budidaya", "Staf Perkebunan"]],
+  ]],
+  ["Seni & Hiburan", ["Fotografi", "Video"], [
+    ["Fotografi", ["Asisten Fotografer", "Fotografer", "Photo Editor"]],
+    ["Video", ["Kameramen", "Videografer", "Video Editor"]],
+  ]],
+  ["Otomotif", ["Mekanik"], [
+    ["Mekanik", ["Mekanik Mobil", "Mekanik Motor", "Service Advisor", "Teknisi Otomotif"]],
+    ["Penjualan Otomotif", ["Admin Dealer Motor", "Sales Otomotif"]],
+  ]],
+  ["Energi & Pertambangan", ["Migas"], [
+    ["Migas", ["Geologist", "HSE Officer", "Operator Produksi Migas", "Petroleum Engineer", "Staf Migas", "Surveyor"]],
+  ]],
+  ["Pemerintahan", [], [
+    ["Pemerintahan", ["Analis Kebijakan", "Staf Administrasi Pemerintahan", "Staf Kelurahan", "Tenaga Honorer"]],
+  ]],
+  ["Telekomunikasi", ["Jaringan"], [
+    ["Jaringan", ["NOC Engineer", "Network Administrator", "Network Engineer", "Teknisi Fiber Optik", "Teknisi Jaringan"]],
+  ]],
+  ["Asuransi & Perbankan", ["Teller", "Agen"], [
+    ["Teller", ["Analis Kredit", "Customer Service Bank", "Relationship Officer", "Staf Operasional Bank", "Teller"]],
+    ["Agen", ["Agen Asuransi", "Financial Advisor", "Manager Agensi", "Staf Klaim", "Underwriter"]],
+  ]],
 ];
 
-export const CATEGORY_GROUPS: CategoryGroup[] = CATEGORY_SEED.map(([name, subs], i) => ({
+export const CATEGORY_GROUPS: CategoryGroup[] = CATEGORY_SEED.map(([name, subs, groups], i) => ({
   id: `cat-${i + 1}`,
   name,
   subs,
+  roleGroups: groups.map(([title, roles]) => ({ title, roles })),
 }));
 export const CATEGORY_PAGE_SIZE = 5;
 
