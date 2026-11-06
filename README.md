@@ -1,36 +1,21 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Glints Website Clone – AI-Assisted Build Challenge
 
-## Getting Started
+A frontend website clone inspired by [Glints](https://glints.com/id/), developed as part of the Mamikos Frontend Engineer Intern Technical Test.
 
-First, run the development server:
+**Original Website:** https://glints.com/id/  
+**Live Demo:** https://glints-clone-chi.vercel.app
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+This project demonstrates an AI-assisted development workflow, frontend implementation, API integration, and basic full-stack functionality using GET and POST requests.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Pages & Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The project consists of four pages inspired by the original [Glints Indonesia website](https://glints.com/id/):
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Page | Route | Description |
+|---|---|---|
+| Home Page | `/` | Glints-inspired landing page with dynamic content fetched through a GET API. |
+| Registration Selection | `/daftar` | Registration page offering Google sign-up as an authentication option. |
+| Email Registration | `/daftar/form` | Email registration form integrated with a POST API to submit user data. |
+| Data Verification | `/daftar/cekData` | Additional unofficial page developed to verify and inspect submitted registration data. |
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[Continue with the remaining README sections from the previous version.]
