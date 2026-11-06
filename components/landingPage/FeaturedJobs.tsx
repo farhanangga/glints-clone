@@ -34,13 +34,17 @@ export function FeaturedJobs() {
                   role="tab"
                   aria-selected={active}
                   onClick={() => setCategory(c.slug)}
-                  className={`-mb-px shrink-0 whitespace-nowrap border-b-2 px-4 py-4 transition-colors ${
-                    active
-                      ? "border-[#1672E0] text-[#1672E0]"
-                      : "border-transparent text-[#555] hover:text-[#1672E0]"
+                  className={`group relative -mb-px shrink-0 whitespace-nowrap px-4 py-4 transition-colors focus-visible:outline-none ${
+                    active ? "text-[#1672E0]" : "text-[#555]"
                   }`}
                 >
                   {c.label}
+                  <span
+                    aria-hidden
+                    className={`absolute inset-x-0 bottom-0 rounded-t-[3px] bg-[#1672E0] transition-[height,opacity] duration-150 group-hover:h-[4px] group-hover:opacity-100 group-focus-visible:h-[4px] group-focus-visible:opacity-100 motion-reduce:transition-none ${
+                      active ? "h-[4px] opacity-100" : "h-0 opacity-0"
+                    }`}
+                  />
                 </button>
               );
             })}
