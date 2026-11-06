@@ -53,6 +53,9 @@ function ChatFilledIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={className}>
       <path d="M4 3h16a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H8.2l-4.4 3.6c-.6.5-1.8.1-1.8-.8V5a2 2 0 0 1 2-2z" />
+      <circle cx="7.5" cy="10.5" r="1.4" fill="white" />
+      <circle cx="12" cy="10.5" r="1.4" fill="white" />
+      <circle cx="16.5" cy="10.5" r="1.4" fill="white" />
     </svg>
   );
 }
